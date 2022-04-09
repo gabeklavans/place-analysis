@@ -29,7 +29,7 @@ user_pixels_placed = {}
 
 for row in part.itertuples():
     user_id = row[user_id_idx]
-    if user_pixels_placed[user_id] == None:
+    if user_id in user_pixels_placed:
         user_pixels_placed[user_id] = []
     user_pixels_placed[user_id].append(user_pixels_placed)
 
@@ -50,7 +50,5 @@ for user_id in user_pixels_placed.keys():
             variance.append(time / average)
         user_placement_variance[user_id] = sum(variance) / len(variance)
 
-
-# I don't know what they were doing here nor do I wanna think about it.
-
-print("Processing data for bot detection...")
+with open("variance.txt", "w") as file:
+    file.write(json.dumps(user_placement_variance))
