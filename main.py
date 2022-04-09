@@ -34,7 +34,7 @@ for row in part.itertuples():
     user_pixels_placed[user_id].append(user_pixels_placed)
 
 ## Process this data
-user_placement_variance = []
+user_placement_variance = {}
 
 for user_id in user_pixels_placed.keys():
     placement_time_list = user_pixels_placed[user_id]
