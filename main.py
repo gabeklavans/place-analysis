@@ -15,6 +15,8 @@ part = ddf.partitions[-7]
 part["timestamp"] = dd.to_datetime(part["timestamp"])
 # part.sort_values(by=["timestamp"], ascending=True)
 
+print("Formatted CSV.")
+
 timestamp_idx = 1
 user_id_idx = 2
 
@@ -26,6 +28,10 @@ time_since_dict = {}
 last_pixel_time_dict = {}
 thing1 = []
 thing2 = []
+
+# I don't know what they were doing here nor do I wanna think about it.
+
+print("Processing data for bot detection...")
 
 for row in part.itertuples():
     user_id = row[user_id_idx]
@@ -68,6 +74,8 @@ for partit in ddf.partitions:
             else:
                 time_since_dict[user_id] = row[timestamp_idx] - last_pixel_time_dict[user_id]
         last_pixel_time_dict[user_id] = row[timestamp_idx]
+
+print("Generating result files...")
 
 with open('counts.txt', 'w') as convert_file:
     convert_file.write(json.dumps(count_dict))
