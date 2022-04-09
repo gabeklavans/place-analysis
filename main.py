@@ -9,7 +9,7 @@ import json
 chunksize = 10 ** 4
 filepath = "data/2022_place_canvas_history.csv"
 
-ddf = dd.read_csv(filepath, blocksize="0.1MB")
+ddf = dd.read_csv(filepath, blocksize="10MB")
 
 part = ddf.partitions[-7]
 part["timestamp"] = dd.to_datetime(part["timestamp"])
@@ -19,6 +19,33 @@ print("Formatted CSV.")
 
 timestamp_idx = 1
 user_id_idx = 2
+
+
+# Danny's rewrite attempt
+
+## Re-arrange the data set to organize it by key: user value: time place
+## TO DO: Maybe use dataframe to organize this data set instead due to it's large size?
+user_pixels_placed = {}
+
+for row in part.itertuples():
+    user_id = row[user_id_idx]
+    if user_pixels_placed[user_id] == None:
+        user_pixels_placed[user_id] = []
+    user_pixels_placed[user_id].append(user_pixels_placed)
+
+## Process this data
+user_placement_variance = []
+
+for user_id in user_pixels_placed.keys():
+    placement_time_list = user_pixels_placed[user_id]
+    if len(placement_time_list)>1:
+        # Find differences between pixel placements
+        difference_in_time = []
+        for i in range(1, len(placement_time_list)):
+            difference_in_time.append(placement_time_list[i - 1], placement_time_list[i])
+        # Compare differences between the pixels placed by dividing idk if this is a good way or hella inefficient probably is
+        average = sum(difference_in_time) / len(difference_in_time)
+
 
 threshold = 0.2 # in seconds
 
@@ -33,15 +60,16 @@ thing2 = []
 
 print("Processing data for bot detection...")
 
-print(part.length)
 
+
+"""
 for row in part.itertuples():
     user_id = row[user_id_idx]
     if user_id in last_pixel_time_dict.keys():
         if user_id in time_since_dict.keys():
+            # Get time difference between last pixel placement and newly found pixel
             time_since_last_pixel = row[timestamp_idx] - last_pixel_time_dict[row[user_id_idx]]
             variance = abs((time_since_dict[user_id] - time_since_last_pixel).total_seconds())
-            # thing1.append(variance)
             if variance < threshold:
                 if user_id not in count_dict.keys():
                     count_dict[user_id] = 0
@@ -50,8 +78,9 @@ for row in part.itertuples():
                 time_since_dict[user_id] = time_since_last_pixel
         else:
             time_since_dict[user_id] = row[timestamp_idx] - last_pixel_time_dict[user_id]
+    # Store current pixel placement
     last_pixel_time_dict[user_id] = row[timestamp_idx]
-
+"""
 print("Done!")
 
 # Scans whole data set, disabled for testing purposes
