@@ -9,7 +9,7 @@ import json
 chunksize = 10 ** 4
 filepath = "data/2022_place_canvas_history.csv"
 
-ddf = dd.read_csv(filepath, blocksize="400MB")
+ddf = dd.read_csv(filepath, blocksize="0.1MB")
 
 part = ddf.partitions[-7]
 part["timestamp"] = dd.to_datetime(part["timestamp"])
@@ -33,6 +33,8 @@ thing2 = []
 
 print("Processing data for bot detection...")
 
+print(part.length)
+
 for row in part.itertuples():
     user_id = row[user_id_idx]
     if user_id in last_pixel_time_dict.keys():
@@ -49,6 +51,12 @@ for row in part.itertuples():
         else:
             time_since_dict[user_id] = row[timestamp_idx] - last_pixel_time_dict[user_id]
     last_pixel_time_dict[user_id] = row[timestamp_idx]
+
+print("Done!")
+
+# Scans whole data set, disabled for testing purposes
+
+"""
 
 count_dict = {}
 variance_dict = {}
@@ -74,6 +82,8 @@ for partit in ddf.partitions:
             else:
                 time_since_dict[user_id] = row[timestamp_idx] - last_pixel_time_dict[user_id]
         last_pixel_time_dict[user_id] = row[timestamp_idx]
+
+"""
 
 print("Generating result files...")
 
