@@ -35,6 +35,7 @@ for row in part.itertuples():
 
 ## Process this data
 user_placement_variance = {}
+lock = False
 
 for user_id in user_pixels_placed.keys():
     placement_time_list = user_pixels_placed[user_id]
@@ -55,6 +56,9 @@ for user_id in user_pixels_placed.keys():
 
         if len(variance) > 0:
             user_placement_variance[user_id] = sum(variance) / len(variance)
+            if lock == False and user_placement_variance[user_id] == 1:
+                print(placement_time_list, variance)
+                lock = True
 
 with open("variance.txt", "w") as file:
     file.write(json.dumps(user_placement_variance))
