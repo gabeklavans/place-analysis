@@ -1,14 +1,17 @@
-import numpy as np
 import pandas as pd
 import dask.dataframe as dd
-import matplotlib.pyplot as plt
 import json
+import sys
+
+if len(sys.argv) < 3:
+    print(f"Format: '{sys.argv[0]} <path-to-csv> <regularity-threshold-in-seconds e.g. 0.5>'")
+    sys.exit()
 
 chunksize = 10 ** 4
-filepath = "data/2022_place_canvas_history.csv"
-ddf = dd.read_csv(filepath, blocksize="400MB")
+filepath = sys.argv[1]
+ddf = dd.read_csv(filepath)
 
-print("Formatted CSV.")
+print("Found CSV.")
 
 # Only checks one partition. Uncomment this if you're debugging and comment the scan over the entire data set.
 """
@@ -47,7 +50,7 @@ print("Beginning analysis...")
 timestamp_idx = 1
 user_id_idx = 2
 
-threshold = 0.2 # in seconds
+threshold = float(sys.argv[2]) # in seconds
 
 count_dict = {}
 variance_dict = {}
